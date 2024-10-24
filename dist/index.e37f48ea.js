@@ -622,9 +622,14 @@ const controlSearchResults = async function() {
         console.error(error);
     }
 };
+const controlPagination = function(goToPage) {
+    (0, _resultsViewJsDefault.default).render(_modelJs.getSearchResultsPage(goToPage));
+    (0, _paginationViewJsDefault.default).render(_modelJs.state.search);
+};
 const init = function() {
     (0, _recipeViewJsDefault.default).addHandlerRender(controlRecipe);
     (0, _searchViewJsDefault.default).addHandlerSearch(controlSearchResults);
+    (0, _paginationViewJsDefault.default).addHandlerClick(controlPagination);
 };
 init();
 
@@ -3085,7 +3090,7 @@ class ResultsView extends (0, _viewDefault.default) {
     _generateMarkupPreview(result) {
         return `
      <li class="preview">
-            <a class="preview__link preview__link--active" href=#${result.id}>
+            <a class="preview__link " href=#${result.id}>
               <figure class="preview__fig">
                 <img src=${result.image} alt=${result.title} />
               </figure>
@@ -3114,6 +3119,14 @@ var _iconsSvg = require("../../img/icons.svg");
 var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
 class PaginationView extends (0, _viewDefault.default) {
     _parentElement = document.querySelector(".pagination");
+    addHandlerClick(handler) {
+        this._parentElement.addEventListener("click", function(e) {
+            const btn = e.target.closest(".btn--inline");
+            if (!btn) return;
+            const goToPage = +btn.dataset.goto;
+            handler(goToPage);
+        });
+    }
     _generateMarkup() {
         const curPage = this._data.page;
         const numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage);
