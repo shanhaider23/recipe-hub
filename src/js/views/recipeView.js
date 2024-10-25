@@ -1,6 +1,28 @@
 import icons from '../../img/icons.svg';
-import { Fraction } from 'fractional';
 import View from './View.js';
+
+class Fraction {
+  constructor(numerator, denominator = 1) {
+    this.numerator = numerator;
+    this.denominator = denominator;
+    this.simplify();
+  }
+
+  // Simplify the fraction
+  simplify() {
+    const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
+    const divisor = gcd(this.numerator, this.denominator);
+    this.numerator /= divisor;
+    this.denominator /= divisor;
+  }
+
+  // Convert to string format
+  toString() {
+    return this.denominator === 1
+      ? `${this.numerator}`
+      : `${this.numerator}/${this.denominator}`;
+  }
+}
 
 class RecipeView extends View {
   _parentElement = document.querySelector('.recipe');
